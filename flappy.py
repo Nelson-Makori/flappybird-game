@@ -69,6 +69,11 @@ class Ground(pygame.sprite.Sprite):
         super().__init__()
         self.rect = pygame.Rect(0, SCREEN_HEIGHT - GROUND_HEIGHT, SCREEN_WIDTH, GROUND_HEIGHT)
 
+class Ceiling(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.rect = pygame.Rect(0, 0, SCREEN_WIDTH, 1)  # Height of 1 for a thin line
+
 def reset_game(bird, pipes):
     bird.rect.y = SCREEN_HEIGHT // 2
     bird.velocity = 0
@@ -79,6 +84,7 @@ def main():
     bird = Bird()
     pipes = pygame.sprite.Group()
     ground = Ground()
+    ceiling = Ceiling()
 
     # Game state
     waiting_for_key = True
@@ -144,6 +150,10 @@ def main():
         if bird.rect.colliderect(ground.rect):
             game_over = True
 
+        # Check for collision with the ceiling
+        if bird.rect.colliderect(ceiling.rect):
+            game_over = True
+
         # Check for passing pipes
         for pipe in pipes:
             if pipe.rect_top.right == bird.rect.left:
@@ -158,6 +168,7 @@ def main():
             pygame.draw.rect(screen, BLACK, pipe.rect_bottom)
 
         pygame.draw.rect(screen, BLACK, ground.rect)
+        pygame.draw.rect(screen, BLACK, ceiling.rect)
 
         # Draw score
         font = pygame.font.SysFont(None, 36)
