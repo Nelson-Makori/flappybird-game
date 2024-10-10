@@ -23,6 +23,19 @@ PIPE_DISTANCE = 200
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Flappy Bird Clone')
 
+# Load sound files
+pygame.mixer.init()
+flap_sound = pygame.mixer.Sound('sounds/sound3.wav')  # Replace 'sound.wav' with your sound sound file
+pipe_collision_sound = pygame.mixer.Sound('sounds/sound2.wav')  # Replace 'sound2.wav' with your pipe collision sound file
+ground_collision_sound = pygame.mixer.Sound('sounds/sound2.wav')  # Replace 'sound2.wav' with your ground collision sound file
+ceiling_collision_sound = pygame.mixer.Sound('sounds/sound2.wav') # Replace 'sound2.wav' with your ground collision sound file
+
+#backgraound music
+pygame.mixer.music.load('sounds/sound.wav')
+
+#play the music
+pygame.mixer.music.play(-1, 0.0)
+
 class Bird(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -41,7 +54,9 @@ class Bird(pygame.sprite.Sprite):
     def jump(self):
         # Implement bird jump action
         self.velocity = self.jump_strength
-
+        flap_sound.play()  # Play flap sound when jumping
+        flap_sound.set_volume(.1)
+        
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, x, height):
         super().__init__()
@@ -145,14 +160,21 @@ def main():
         for pipe in pipes:
             if bird.rect.colliderect(pipe.rect_top) or bird.rect.colliderect(pipe.rect_bottom):
                 game_over = True
+                pipe_collision_sound.play()  # Play pipe collision sound
+                pipe_collision_sound.set_volume(3)
 
         # Check for collision with the ground
         if bird.rect.colliderect(ground.rect):
             game_over = True
+            ground_collision_sound.play()  # Play ground collision sound
+            ground_collision_sound.set_volume(3)
+            
 
         # Check for collision with the ceiling
         if bird.rect.colliderect(ceiling.rect):
             game_over = True
+            ceiling_collision_sound.play()  # Play ceiling collision sound
+            ceiling_collision_sound.set_volume(3)
 
         # Check for passing pipes
         for pipe in pipes:
